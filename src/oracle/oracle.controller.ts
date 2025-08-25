@@ -3,13 +3,17 @@ import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AIRequestDto } from "./dto/ai-request.dto";
 import { AIResponseDto } from "./dto/ai-response.dto";
 import { AIProviderService } from "./services/ai-provider.service";
+import { LatexAIService } from "./services/latex-ai.service";
 
 @ApiTags("AI Oracle")
 @Controller("oracle")
 export class OracleController {
   private readonly logger = new Logger(OracleController.name);
 
-  constructor(private readonly aiProviderService: AIProviderService) {}
+  constructor(
+    private readonly aiProviderService: AIProviderService,
+    private readonly latexAIService: LatexAIService
+  ) {}
 
   @Get("health")
   @ApiOperation({ summary: "Health check endpoint" })
@@ -76,5 +80,10 @@ export class OracleController {
     );
 
     return responses;
+  }
+
+  @Post("generate-latex")
+  async generateLatex(@Body() body: any) {
+    return this.latexAIService.generateLatexApplication(body);
   }
 }
